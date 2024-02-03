@@ -4,7 +4,8 @@
   import EmailSignup from '$lib/registration/EmailSignup.svelte';
   import { emailCheck, passwordStrong } from '$lib/frontend-code/helpers';
   import { createUserWithEmailAndPassword } from 'firebase/auth';
-  import { auth } from '$lib/firebase/firebase.app';
+  import { auth, db } from '$lib/firebase/firebase.app';
+  import { doc, setDoc } from 'firebase/firestore';
 
   let emailGood = true;
   let passwordGood = true;
@@ -29,7 +30,9 @@
     }
     try {
       const user = await createUserWithEmailAndPassword(auth, email, password);
-      console.log(user.user.uid);
+      await setDoc(doc(db, 'users', user.user.uid), {
+        email,
+      });
     } catch (e) {
       alert('Email already in use!');
       emailGood = false;

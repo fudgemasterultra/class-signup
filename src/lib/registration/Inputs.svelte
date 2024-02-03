@@ -2,6 +2,7 @@
   export let textData = '';
   export let inputType = 'text';
   export let placeHolder = '';
+  export let error = false;
 
   function typeAction(node: any) {
     node.type = inputType;
@@ -13,6 +14,6 @@
     bind:value={textData}
     use:typeAction
     placeholder={placeHolder}
-    class="border-2 rounded-md py-1 px-2"
+    class="border-2 rounded-md py-1 px-2 {!error ? 'border-red-700' : ''}"
   />
 </div>

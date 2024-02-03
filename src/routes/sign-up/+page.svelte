@@ -6,6 +6,7 @@
   import { createUserWithEmailAndPassword } from 'firebase/auth';
   import { auth, db } from '$lib/firebase/firebase.app';
   import { doc, setDoc } from 'firebase/firestore';
+  import { goto } from '$app/navigation';
 
   let emailGood = true;
   let passwordGood = true;
@@ -15,16 +16,19 @@
     loading = true;
     if (!emailCheck(email)) {
       emailGood = false;
+      alert('Please input a valid email');
       loading = false;
       return;
     }
     if (password != passwordConf) {
       passwordConfGood = false;
+      alert("Passwords don't match");
       loading = false;
       return;
     }
     if (!passwordStrong(password)) {
       passwordGood = false;
+      alert('Password must be 8 characters, and contain 1 uppercase, special, and number');
       loading = false;
       return;
     }
@@ -33,6 +37,7 @@
       await setDoc(doc(db, 'users', user.user.uid), {
         email,
       });
+      goto('/account');
     } catch (e) {
       alert('Email already in use!');
       emailGood = false;

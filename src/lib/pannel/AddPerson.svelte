@@ -4,10 +4,13 @@
   import { collection, getDoc, getDocs, where, query } from 'firebase/firestore';
   import { onMount } from 'svelte';
 
-  export let uid: string | null;
+  export let uid: string | null | undefined;
   export let personType: string;
   const personsInfo: Array<Types.Child | Types.Parent> = [];
   onMount(async () => {
+    if (uid === '') {
+      return;
+    }
     const persons = collection(db, personType);
     const q = query(persons, where('userID', '==', uid));
     const documents = await getDocs(q);

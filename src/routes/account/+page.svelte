@@ -1,18 +1,19 @@
 <script lang="ts">
   import Auth from '$lib/authwraper/Auth.svelte';
+  import AddPerson from '$lib/pannel/AddPerson.svelte';
   import { auth } from '$lib/firebase/firebase.app';
-  let uid: String | null;
+  $: uid = '';
   auth.onAuthStateChanged((user) => {
     if (user) {
+      console.log(user.uid);
       uid = user.uid;
     }
   });
-  const parrent = 'parrent';
+  const parrent = 'parent';
   const child = 'child';
 </script>
 
 <Auth>
-  <div>
-    <p>Hello</p>
-  </div>
+  <AddPerson personType={parrent} {uid} />
+  <AddPerson personType={child} {uid} />
 </Auth>

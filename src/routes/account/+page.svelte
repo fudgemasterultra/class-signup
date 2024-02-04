@@ -2,10 +2,10 @@
   import Auth from '$lib/authwraper/Auth.svelte';
   import AddPerson from '$lib/pannel/AddPerson.svelte';
   import { auth } from '$lib/firebase/firebase.app';
+  import Background from '$lib/login/Background.svelte';
   $: uid = '';
   auth.onAuthStateChanged((user) => {
     if (user) {
-      console.log(user.uid);
       uid = user.uid;
     }
   });
@@ -14,6 +14,8 @@
 </script>
 
 <Auth>
-  <AddPerson personType={parrent} {uid} />
-  <AddPerson personType={child} {uid} />
+  {#if uid !== ''}
+    <AddPerson personType={parrent} {uid} />
+    <AddPerson personType={child} {uid} />
+  {/if}
 </Auth>

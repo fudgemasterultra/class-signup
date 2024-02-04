@@ -28,4 +28,9 @@ export namespace Types{
         teachKnowDisable: boolean;
         extraInfo: string;
     }
+
+    export type PersonsDoc = {
+        docID : string;
+        doc : Child | Parent;
+    }
 }

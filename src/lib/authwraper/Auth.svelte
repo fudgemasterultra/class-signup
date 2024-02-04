@@ -5,7 +5,6 @@
   onMount(() => {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        console.log(user.email);
       } else {
         goto('/login');
       }

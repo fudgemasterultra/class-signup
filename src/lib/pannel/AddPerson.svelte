@@ -3,21 +3,28 @@
   import type { Types } from '$lib/types/types';
   import { collection, getDoc, getDocs, where, query } from 'firebase/firestore';
   import { onMount } from 'svelte';
+  import { grabPersons } from '$lib/frontend-code/helpers';
 
-  export let uid: string | null | undefined;
+  export let uid: string;
   export let personType: string;
-  const personsInfo: Array<Types.Child | Types.Parent> = [];
+  let personsInfo: Array<Types.PersonsDoc> = [];
+
+  function pushPersons(person: Types.PersonsDoc) {
+    personsInfo = [...personsInfo, person];
+  }
   onMount(async () => {
-    if (uid === '') {
+    let persons = await grabPersons(uid, personType);
+    if (persons === undefined) {
       return;
     }
-    const persons = collection(db, personType);
-    const q = query(persons, where('userID', '==', uid));
-    const documents = await getDocs(q);
-    documents.forEach((doc) => {
-      const person = doc.data() as Types.Parent | Types.Child;
-    });
+    personsInfo = persons;
   });
 </script>
 
-<div></div>
+<div>
+  {#each personsInfo as person, index}
+    <p>
+      {person.doc.userID}
+    </p>
+  {/each}
+</div>

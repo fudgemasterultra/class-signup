@@ -1,4 +1,5 @@
 <script lang="ts">
+  import PersonInfoBlock from './PersonInfoBlock.svelte';
   import { db } from '$lib/firebase/firebase.app';
   import type { Types } from '$lib/types/types';
   import { collection, getDoc, getDocs, where, query } from 'firebase/firestore';
@@ -8,6 +9,14 @@
   export let uid: string;
   export let personType: string;
   let personsInfo: Array<Types.PersonsDoc> = [];
+
+  const refreshData = async () => {
+    let persons = await grabPersons(uid, personType);
+    if (persons === undefined) {
+      return;
+    }
+    personsInfo = persons;
+  };
 
   function pushPersons(person: Types.PersonsDoc) {
     personsInfo = [...personsInfo, person];
@@ -23,8 +32,6 @@
 
 <div>
   {#each personsInfo as person, index}
-    <p>
-      {person.doc.userID}
-    </p>
+    <PersonInfoBlock personDoc={person} />
   {/each}
 </div>

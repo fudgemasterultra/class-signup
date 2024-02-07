@@ -32,6 +32,6 @@
 
 <div>
   {#each personsInfo as person, index}
-    <PersonInfoBlock personDoc={person} />
+    <PersonInfoBlock {refreshData} personDoc={person} />
   {/each}
 </div>

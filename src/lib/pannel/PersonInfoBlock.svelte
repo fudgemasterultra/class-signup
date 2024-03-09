@@ -182,8 +182,7 @@
         >
         <button
           class={`w-full bg-red-500 rounded-lg py-1 font-bold text-white`}
-          on:click={deletePerson}
-          disabled={saving}>Delete</button
+          on:click={deletePerson}>Delete</button
         >
       </div>
     {/if}

@@ -15,6 +15,7 @@
   import { onMount } from 'svelte';
   import { grabPersons } from '$lib/frontend-code/helpers';
   import { gradeLevels } from '$lib/frontend-code/helpers';
+  import { goto } from '$app/navigation';
 
   export let uid: string;
   export let personType: string;
@@ -24,6 +25,7 @@
   let parent: undefined | Types.Parent;
   let newPerson: Types.Child | Types.Parent;
   let saving = true;
+  let refresh = true;
   const resetPerson = () => {
     if (personType === 'child') {
       newPerson = {
@@ -60,6 +62,7 @@
       return;
     }
     personsInfo = [...persons];
+    refresh = !refresh;
   };
 
   function pushPersons(person: Types.PersonsDoc) {
@@ -78,6 +81,10 @@
       await addDoc(collection(db, 'child'), child);
       await refreshData();
       resetPerson();
+    } else if (parent !== undefined) {
+      await addDoc(collection(db, 'parent'), parent);
+      await refreshData();
+      resetPerson();
     }
   };
 </script>
@@ -88,7 +95,9 @@
   </h1>
   <div class="flex flex-wrap justify-center">
     {#each personsInfo as person, index}
-      <PersonInfoBlock {refreshData} personDoc={person} key={index} />
+      {#key refresh}
+        <PersonInfoBlock {refreshData} personDoc={person} key={index} />
+      {/key}
     {/each}
     <div
       class="border-2 border-blue-700 rounded-lg bg-gray-50 hover:bg-gray-200 w-[300px] ease-in-out transition-all py-3 my-3"
@@ -183,6 +192,45 @@
             />
           </div>
 
+          <button
+            class={`w-full ${saving ? 'bg-gray-800' : 'bg-green-500'} rounded-lg py-1 font-bold text-white`}
+            on:click={saveData}
+            disabled={saving}>Save</button
+          >
+        </div>
+      {/if}
+      {#if parent !== undefined}
+        <div class="flex flex-wrap py-4 px-2 gap-2">
+          <input
+            type="text"
+            class="border-b-2 border-black bg-transparent"
+            placeholder="First Name"
+            bind:value={parent.fName}
+            on:change={() => (saving = false)}
+          />
+          <input
+            type="text"
+            class="border-b-2 border-black bg-transparent"
+            placeholder="Last Name"
+            bind:value={parent.lName}
+            on:change={() => (saving = false)}
+          />
+          <input
+            type="text"
+            class="border-b-2 border-black bg-transparent"
+            placeholder="Phone Number"
+            bind:value={parent.phone}
+            on:change={() => (saving = false)}
+          />
+          <div>
+            <input
+              type="checkbox"
+              class="border-b-2 border-black bg-transparent"
+              bind:checked={parent.textAlerts}
+              on:change={() => (saving = false)}
+            />
+            Text Alerts
+          </div>
           <button
             class={`w-full ${saving ? 'bg-gray-800' : 'bg-green-500'} rounded-lg py-1 font-bold text-white`}
             on:click={saveData}
